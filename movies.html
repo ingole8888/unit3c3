@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movies</title>
+  </head>
+  <body>
+    <div id="navbar">
+      <h1>Movie List</h1>
+      
+      <!-- Display the wallet amount here inside h1 tag with id as "wallet". Note only amount, no extra text. Like 500 not Rs 500 -->
+      <h1 id="wallet">0</h1>
+
+      <h3><a href="checkout.html"></a></h3>
+    </div>
+    <div id="search_bar">
+      <!-- input box for searching movies with id as "search" -->
+      <!-- No button should be there for searching movies, it should search with input  -->
+      <input id="search" oninput="debounce(main,300)" type="text" placeholder="movie name">
+    </div>
+   <div id="flex">
+    <div id="movies">
+      <!-- Append all searched movies here in grid format -->
+      <!-- Every movie card should have image, title and a book now button  -->
+      <!-- Book now buttons should have class "book_now"  -->
+    </div>
+    <div id="ss">  
+    </div>
+  </div>
+  </body>
+</html>
+<script>
+  var id;
+async function showdata(){
+  var movie = document.getElementById("search").value;
+  var res =await fetch(`https://www.omdbapi.com/?apikey=793f7c2e&s=${movie}`)
+  var data=await res.json()
+  return data.Search;
+}
+function append(data){
+    document.getElementById("movies").innerHTML=null;
+    data.forEach(function(el){
+        var name = document.createElement("p");
+        name.style="padding:5px"
+        name.innerText=el.Title;
+        name.setAttribute("id","movie");
+        name.addEventListener("click",function(){
+            get_movie(el);
+        })
+        document.getElementById("movies").append(name);
+    })
+}
+async function main(){
+    var data = await showdata();
+    if(data == undefined){
+        return false;
+    }
+    console.log(data);
+    append(data);
+}
+function debounce(func,delay){
+    if(id){
+        clearTimeout(id);
+    }
+    id=setTimeout(function(){
+        func();
+    },delay);
+}
+function get_movie(data){
+    var container=document.getElementById("ss");
+    let img =document.createElement("img");
+    img.src=data.Poster;
+    let name=document.createElement("h2");
+    name.innerText=data.Title;
+    let year=document.createElement("h3");
+    year.innertext=`Release year: ${data.year}`
+
+    var div= document.createElement("div");
+    div.append(img,name,year);
+    container.innerHTML=null;
+    container.append(div);
+}
+</script>
